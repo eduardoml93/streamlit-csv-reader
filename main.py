@@ -47,6 +47,16 @@ def main():
             
             st.write("**Número de Registros Duplicados:**")
             st.write(df.duplicated().sum())
+
+            st.write("**Número de Valores Únicos por Coluna:**")
+            st.write(df.nunique())
+
+            st.write("**Estatísticas Descritivas:**")
+            st.write(df.describe())
+
+            st.write("**Distribuição Percentual de Valores Nulos:**")
+            st.write((df.isnull().sum() / len(df)) * 100)
+
             
         except Exception as e:
             st.error(f"Erro ao ler o arquivo: {e}")
