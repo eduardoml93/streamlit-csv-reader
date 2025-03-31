@@ -1,8 +1,32 @@
 import streamlit as st
 import pandas as pd
+import base64
+
+# Função para carregar a imagem e convertê-la para base64
+def get_base64_of_image(file):
+    with open(file, "rb") as f:
+        return base64.b64encode(f.read()).decode()
+
+# Definir o background com a imagem convertida em base64
+def set_background(image_file):
+    base64_str = get_base64_of_image(image_file)
+    css = f"""
+    <style>
+    .stApp {{
+        background-image: url("data:image/jpeg;base64,{base64_str}");
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+    }}
+    </style>
+    """
+    st.markdown(css, unsafe_allow_html=True)
+
+# Aplicando o background
+set_background("bg.jpeg")
 
 def main():
-    st.title("CSV Reader App")
+    st.title("CSV Reader com Streamlit")
     
     uploaded_file = st.file_uploader("Faça o upload do seu arquivo CSV", type=["csv"])
     
@@ -23,16 +47,6 @@ def main():
             
             st.write("**Número de Registros Duplicados:**")
             st.write(df.duplicated().sum())
-
-            st.write("**Número de Valores Únicos por Coluna:**")
-            st.write(df.nunique())
-
-            st.write("**Estatísticas Descritivas:**")
-            st.write(df.describe())
-
-            st.write("**Distribuição Percentual de Valores Nulos:**")
-            st.write((df.isnull().sum() / len(df)) * 100)
-
             
         except Exception as e:
             st.error(f"Erro ao ler o arquivo: {e}")
