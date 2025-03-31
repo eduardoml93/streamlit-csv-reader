@@ -18,6 +18,19 @@ def set_background(image_file):
         background-position: center;
         background-attachment: fixed;
     }}
+
+    /* Estilização do título */
+    .title-box {{
+        background: rgba(0, 0, 0, 0.6); /* Fundo escuro semi-transparente */
+        padding: 15px;
+        border-radius: 10px;
+        text-align: center;
+        color: white;
+        font-size: 28px;
+        font-weight: bold;
+        width: 60%;
+        margin: auto;
+    }}
     </style>
     """
     st.markdown(css, unsafe_allow_html=True)
@@ -26,8 +39,9 @@ def set_background(image_file):
 set_background("bg.jpeg")
 
 def main():
-    st.title("CSV Reader com Streamlit")
-    
+    # Aplicando o estilo ao título
+    st.markdown('<div class="title-box">CSV Reader APP</div>', unsafe_allow_html=True)
+
     uploaded_file = st.file_uploader("Faça o upload do seu arquivo CSV", type=["csv"])
     
     if uploaded_file is not None:
@@ -57,7 +71,6 @@ def main():
             st.write("**Distribuição Percentual de Valores Nulos:**")
             st.write((df.isnull().sum() / len(df)) * 100)
 
-            
         except Exception as e:
             st.error(f"Erro ao ler o arquivo: {e}")
 
