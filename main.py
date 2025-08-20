@@ -23,7 +23,7 @@ def set_background(image_file):
 
     /* Estilização do título */
     .title-box {{
-        background: rgba(0, 0, 0, 0.6); /* Fundo escuro semi-transparente */
+        background: rgba(0, 0, 0, 0.3); /* Fundo escuro semi-transparente */
         padding: 15px;
         border-radius: 10px;
         text-align: center;
@@ -96,3 +96,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
