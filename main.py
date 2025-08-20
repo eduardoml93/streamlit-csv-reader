@@ -10,20 +10,23 @@ def get_base64_of_image(file):
         return base64.b64encode(f.read()).decode()
 
 # Definir o background com a imagem convertida em base64
-def set_background(image_file):
+def set_background(image_file, darkness=0.5):
+    """
+    darkness: valor de 0 a 1, sendo 0 sem escurecimento e 1 totalmente escuro
+    """
     base64_str = get_base64_of_image(image_file)
     css = f"""
     <style>
     .stApp {{
-        background-image: url("data:image/jpeg;base64,{base64_str}");
+        background-image: linear-gradient(rgba(0,0,0,{darkness}), rgba(0,0,0,{darkness})), 
+                          url("data:image/jpeg;base64,{base64_str}");
         background-size: cover;
         background-position: center;
         background-attachment: fixed;
     }}
 
-    /* Estilização do título */
     .title-box {{
-        background: rgba(0, 0, 0, 0.3); /* Fundo escuro semi-transparente */
+        background: rgba(0, 0, 0, 0.3);
         padding: 15px;
         border-radius: 10px;
         text-align: center;
@@ -36,9 +39,6 @@ def set_background(image_file):
     </style>
     """
     st.markdown(css, unsafe_allow_html=True)
-
-# Aplicando o background
-set_background("bg.jpeg")
 
 def main():
     # Aplicando o estilo ao título
@@ -96,4 +96,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
