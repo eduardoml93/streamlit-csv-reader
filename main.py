@@ -15,10 +15,29 @@ def set_background(image_file):
     css = f"""
     <style>
     .stApp {{
+        position: relative;
         background-image: url("data:image/jpeg;base64,{base64_str}");
         background-size: cover;
         background-position: center;
         background-attachment: fixed;
+    }}
+
+    /* Overlay escura sobre a imagem de fundo */
+    .stApp::before {{
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.5); /* ajuste a opacidade aqui (0.5 = 50%) */
+        z-index: 0;
+    }}
+
+    /* Garantir que o conteúdo fique acima do overlay */
+    .stApp > .main {{
+        position: relative;
+        z-index: 1;
     }}
 
     /* Estilização do título */
