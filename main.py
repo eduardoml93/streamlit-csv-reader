@@ -10,7 +10,7 @@ def get_base64_of_image(file):
         return base64.b64encode(f.read()).decode()
 
 # Definir o background com a imagem convertida em base64
-def set_background(image_file, darkness=0.5):
+def set_background(image_file="bg.jpeg", darkness=0.5):
     """
     darkness: valor de 0 a 1, sendo 0 sem escurecimento e 1 totalmente escuro
     """
@@ -96,5 +96,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
