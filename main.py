@@ -177,6 +177,23 @@ def main():
             st.info("Não há colunas numéricas para boxplot.")
 
         # -------------------
+        # Heatmap (correlação numérica)
+        # -------------------
+        st.write("### Mapa de Calor (Correlação entre Variáveis Numéricas) 🌡️")
+        if len(num_cols) > 1:
+            corr = st.session_state.df[num_cols].corr()
+            fig_heatmap = px.imshow(
+                corr,
+                text_auto=True,
+                color_continuous_scale="RdBu_r",
+                title="Mapa de Calor das Correlações"
+            )
+            st.plotly_chart(fig_heatmap, use_container_width=True)
+        else:
+            st.info("Não há colunas numéricas suficientes para gerar o mapa de calor.")
+
+
+        # -------------------
         # Gráfico de barras para dados string
         # -------------------
         st.write("### Gráfico de Contagem (colunas categóricas)")
@@ -199,4 +216,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
