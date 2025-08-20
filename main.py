@@ -40,6 +40,9 @@ def set_background(image_file="bg.jpeg", darkness=0.5):
     """
     st.markdown(css, unsafe_allow_html=True)
 
+# Definindo o background
+set_background("bg.jpeg", darkness=0.5)
+
 def main():
     # Aplicando o estilo ao título
     st.markdown('<div class="title-box">CSV Reader APP</div>', unsafe_allow_html=True)
@@ -96,6 +99,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 
