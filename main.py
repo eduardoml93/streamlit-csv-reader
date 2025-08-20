@@ -111,11 +111,16 @@ def main():
         st.write("### Histograma")
         num_cols = st.session_state.df.select_dtypes(include='number').columns
         if len(num_cols) > 0:
-            st.session_state.col_hist = st.selectbox(
+            # Usar chave única e simplificar a lógica do índice
+            selected_hist = st.selectbox(
                 "Selecione a coluna numérica para histograma",
                 num_cols,
-                index=num_cols.get_loc(st.session_state.col_hist) if st.session_state.col_hist in num_cols else 0
+                index=num_cols.get_loc(st.session_state.col_hist) if st.session_state.col_hist in num_cols else 0,
+                key="hist_select"
             )
+            # Atualizar o session_state apenas se a seleção mudou
+            if selected_hist != st.session_state.col_hist:
+                st.session_state.col_hist = selected_hist
             fig_hist = px.histogram(st.session_state.df, x=st.session_state.col_hist, nbins=20, title=f"Distribuição de {st.session_state.col_hist}")
             st.plotly_chart(fig_hist, use_container_width=True)
         else:
@@ -126,16 +131,26 @@ def main():
         # -------------------
         st.write("### Gráfico de Dispersão")
         if len(num_cols) >= 2:
-            st.session_state.col_x = st.selectbox(
+            # Eixo X
+            selected_x = st.selectbox(
                 "Eixo X",
                 num_cols,
-                index=num_cols.get_loc(st.session_state.col_x) if st.session_state.col_x in num_cols else 0
+                index=num_cols.get_loc(st.session_state.col_x) if st.session_state.col_x in num_cols else 0,
+                key="scatter_x_select"
             )
-            st.session_state.col_y = st.selectbox(
+            if selected_x != st.session_state.col_x:
+                st.session_state.col_x = selected_x
+
+            # Eixo Y
+            selected_y = st.selectbox(
                 "Eixo Y",
                 num_cols,
-                index=num_cols.get_loc(st.session_state.col_y) if st.session_state.col_y in num_cols else 1
+                index=num_cols.get_loc(st.session_state.col_y) if st.session_state.col_y in num_cols else 1,
+                key="scatter_y_select"
             )
+            if selected_y != st.session_state.col_y:
+                st.session_state.col_y = selected_y
+
             fig_scatter = px.scatter(st.session_state.df, x=st.session_state.col_x, y=st.session_state.col_y, title=f"Dispersão: {st.session_state.col_x} vs {st.session_state.col_y}")
             st.plotly_chart(fig_scatter, use_container_width=True)
         else:
@@ -147,11 +162,14 @@ def main():
         st.write("### Gráfico de Contagem (colunas categóricas)")
         cat_cols = st.session_state.df.select_dtypes(include='object').columns
         if len(cat_cols) > 0:
-            st.session_state.col_cat = st.selectbox(
+            selected_cat = st.selectbox(
                 "Selecione a coluna categórica para contar valores",
                 cat_cols,
-                index=cat_cols.get_loc(st.session_state.col_cat) if st.session_state.col_cat in cat_cols else 0
+                index=cat_cols.get_loc(st.session_state.col_cat) if st.session_state.col_cat in cat_cols else 0,
+                key="bar_select"
             )
+            if selected_cat != st.session_state.col_cat:
+                st.session_state.col_cat = selected_cat
             count_data = st.session_state.df[st.session_state.col_cat].value_counts().reset_index()
             count_data.columns = [st.session_state.col_cat, 'Quantidade']
             fig_bar = px.bar(count_data, x=st.session_state.col_cat, y='Quantidade', title=f"Contagem de {st.session_state.col_cat}")
