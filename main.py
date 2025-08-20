@@ -1,6 +1,8 @@
 import streamlit as st
 import pandas as pd
 import base64
+import requests
+from io import StringIO
 
 # Função para carregar a imagem e convertê-la para base64
 def get_base64_of_image(file):
@@ -42,23 +44,41 @@ def main():
     # Aplicando o estilo ao título
     st.markdown('<div class="title-box">CSV Reader APP</div>', unsafe_allow_html=True)
 
+    st.write("Você pode carregar um arquivo CSV do seu computador **ou** fornecer o link de um CSV online.")
+
     uploaded_file = st.file_uploader("Faça o upload do seu arquivo CSV", type=["csv"])
-    
-    if uploaded_file is not None:
-        separator = st.text_input("Informe o separador (padrão: ,)", value=",")
-        
-        try:
+    csv_url = st.text_input("Ou insira a URL do CSV", placeholder="https://example.com/arquivo.csv")
+
+    separator = st.text_input("Informe o separador (padrão: ,)", value=",")
+
+    df = None
+
+    try:
+        # Se o usuário forneceu um arquivo local
+        if uploaded_file is not None:
             df = pd.read_csv(uploaded_file, sep=separator)
+
+        # Se o usuário forneceu uma URL
+        elif csv_url:
+            response = requests.get(csv_url)
+            if response.status_code == 200:
+                csv_data = StringIO(response.text)
+                df = pd.read_csv(csv_data, sep=separator)
+            else:
+                st.error("Não foi possível acessar o arquivo na URL fornecida.")
+        
+        # Se o dataframe foi carregado com sucesso, exibir as informações
+        if df is not None:
             st.write("### Visualização dos Dados:")
             st.dataframe(df)
-            
+
             st.write("### Informações sobre os Dados:")
             st.write("**Tipos de Dados:**")
             st.write(df.dtypes)
-            
+
             st.write("**Valores Nulos por Coluna:**")
             st.write(df.isnull().sum())
-            
+
             st.write("**Número de Registros Duplicados:**")
             st.write(df.duplicated().sum())
 
@@ -71,8 +91,8 @@ def main():
             st.write("**Distribuição Percentual de Valores Nulos:**")
             st.write((df.isnull().sum() / len(df)) * 100)
 
-        except Exception as e:
-            st.error(f"Erro ao ler o arquivo: {e}")
+    except Exception as e:
+        st.error(f"Erro ao ler o arquivo: {e}")
 
 if __name__ == "__main__":
     main()
