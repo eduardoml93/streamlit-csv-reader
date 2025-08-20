@@ -157,6 +157,26 @@ def main():
             st.info("Não há colunas numéricas suficientes para dispersão.")
 
         # -------------------
+        # Gráfico Boxplot (numérico)
+        # -------------------
+        st.write("### Boxplot")
+        if len(num_cols) > 0:
+            selected_box = st.selectbox(
+                "Selecione a coluna numérica para o Boxplot",
+                num_cols,
+                index=num_cols.get_loc(st.session_state.col_hist) if st.session_state.col_hist in num_cols else 0,
+                key="boxplot_select"
+            )
+            fig_box = px.box(
+                st.session_state.df,
+                y=selected_box,
+                title=f"Boxplot de {selected_box}"
+            )
+            st.plotly_chart(fig_box, use_container_width=True)
+        else:
+            st.info("Não há colunas numéricas para boxplot.")
+
+        # -------------------
         # Gráfico de barras para dados string
         # -------------------
         st.write("### Gráfico de Contagem (colunas categóricas)")
@@ -179,3 +199,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
