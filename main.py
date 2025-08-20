@@ -46,8 +46,14 @@ def main():
     st.write("Você pode carregar um arquivo CSV do seu computador **ou** fornecer o link de um CSV online.")
 
     uploaded_file = st.file_uploader("Faça o upload do seu arquivo CSV", type=["csv"])
-    csv_url = st.text_input("Ou insira a URL do CSV", placeholder="https://example.com/arquivo.csv")
-    separator = st.text_input("Informe o separador (padrão: ,)", value=",")
+    # Criando duas colunas lado a lado
+    col1, col2 = st.columns([4, 1])  # 4:1 para dar mais espaço para a URL e menos para o separador
+    
+    with col1:
+        csv_url = st.text_input("Ou insira a URL do CSV", placeholder="https://example.com/arquivo.csv")
+    
+    with col2:
+        separator = st.text_input("Separador", value=",")
 
     # Botão para executar análise
     if st.button("Executar Análise"):
@@ -113,3 +119,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
