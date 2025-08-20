@@ -45,7 +45,7 @@ if 'col_hist' not in st.session_state:
 if 'col_x' not in st.session_state:
     st.session_state.col_x = None
 if 'col_y' not in st.session_state:
-    st.session_st ate.col_y = None
+    st.session_state.col_y = None
 if 'col_cat' not in st.session_state:
     st.session_state.col_cat = None
 if 'separator' not in st.session_state:
