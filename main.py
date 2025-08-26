@@ -105,6 +105,25 @@ def main():
         st.write("### Visualização dos Dados:")
         st.dataframe(st.session_state.df)
 
+        st.write("### Informações sobre os Dados:")
+        st.write("**Tipos de Dados:**")
+        st.write(df.dtypes)
+        
+        st.write("**Valores Nulos por Coluna:**")
+        st.write(df.isnull().sum())
+        
+        st.write("**Número de Registros Duplicados:**")
+        st.write(df.duplicated().sum())
+
+        st.write("**Número de Valores Únicos por Coluna:**")
+        st.write(df.nunique())
+
+        st.write("**Estatísticas Descritivas:**")
+        st.write(df.describe())
+
+        st.write("**Distribuição Percentual de Valores Nulos:**")
+        st.write((df.isnull().sum() / len(df)) * 100)
+
         # -------------------
         # Histograma (numérico)
         # -------------------
@@ -216,5 +235,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
