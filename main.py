@@ -64,7 +64,7 @@ def main():
     uploaded_file = st.file_uploader("Faça o upload do seu arquivo CSV", type=["csv"])
     
     # Criando duas colunas lado a lado
-    col1, col2 = st.columns([4, 1])  # 4:1 para dar mais espaço para a URL e menos para o separador
+    col1, col2 = st.columns([4, 1])
     
     with col1:
         csv_url = st.text_input("Ou insira a URL do CSV", placeholder="https://example.com/arquivo.csv", value=st.session_state.csv_url)
@@ -90,7 +90,7 @@ def main():
                 st.warning("Por favor, envie um arquivo ou insira a URL do CSV.")
                 return
 
-            # Resetar seleções de colunas ao carregar novo arquivo
+            # Resetar seleções de colunas
             st.session_state.col_hist = None
             st.session_state.col_x = None
             st.session_state.col_y = None
@@ -100,29 +100,32 @@ def main():
             st.error(f"Erro ao ler o arquivo: {e}")
             st.session_state.df = None
 
-    # Exibir os gráficos somente se houver um DataFrame carregado
+    # Exibir informações do DataFrame somente se houver dados carregados
     if st.session_state.df is not None:
         st.write("### Visualização dos Dados:")
         st.dataframe(st.session_state.df)
 
+        # -------------------
+        # INFORMAÇÕES SOBRE OS DADOS
+        # -------------------
         st.write("### Informações sobre os Dados:")
         st.write("**Tipos de Dados:**")
-        st.write(df.dtypes)
+        st.write(st.session_state.df.dtypes)
         
         st.write("**Valores Nulos por Coluna:**")
-        st.write(df.isnull().sum())
+        st.write(st.session_state.df.isnull().sum())
         
         st.write("**Número de Registros Duplicados:**")
-        st.write(df.duplicated().sum())
+        st.write(st.session_state.df.duplicated().sum())
 
         st.write("**Número de Valores Únicos por Coluna:**")
-        st.write(df.nunique())
+        st.write(st.session_state.df.nunique())
 
         st.write("**Estatísticas Descritivas:**")
-        st.write(df.describe())
+        st.write(st.session_state.df.describe())
 
         st.write("**Distribuição Percentual de Valores Nulos:**")
-        st.write((df.isnull().sum() / len(df)) * 100)
+        st.write((st.session_state.df.isnull().sum() / len(st.session_state.df)) * 100)
 
         # -------------------
         # Histograma (numérico)
@@ -235,6 +238,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 
