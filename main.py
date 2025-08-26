@@ -57,7 +57,7 @@ if 'csv_url' not in st.session_state:
 set_background("bg.jpeg", darkness=0.5)
 
 def main():
-    st.markdown('<div class="title-box">CSV Reader APP</div>', unsafe_allow_html=True)
+    st.markdown('<div class="title-box">Explorador CSV</div>', unsafe_allow_html=True)
 
     # Menu lateral para escolher página
     page = st.sidebar.radio("Escolha a Página:", ["📊 Gráficos", "📝 Análises e Estatísticas"])
@@ -168,6 +168,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 
