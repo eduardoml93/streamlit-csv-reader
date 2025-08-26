@@ -59,22 +59,22 @@ set_background("bg.jpeg", darkness=0.5)
 def main():
     st.markdown('<div class="title-box">CSV Reader APP</div>', unsafe_allow_html=True)
 
+    # Menu lateral para escolher página
+    page = st.sidebar.radio("Escolha a Página:", ["📊 Gráficos", "📝 Análises e Estatísticas"])
+
     st.write("Você pode carregar um arquivo CSV do seu computador **ou** fornecer o link de um CSV online.")
 
     uploaded_file = st.file_uploader("Faça o upload do seu arquivo CSV", type=["csv"])
     
-    # Criando duas colunas lado a lado
+    # Colunas para URL e separador
     col1, col2 = st.columns([4, 1])
-    
     with col1:
         csv_url = st.text_input("Ou insira a URL do CSV", placeholder="https://example.com/arquivo.csv", value=st.session_state.csv_url)
         st.session_state.csv_url = csv_url
-    
     with col2:
         separator = st.text_input("Separador", value=st.session_state.separator)
         st.session_state.separator = separator
 
-    # Botão para carregar os dados
     if st.button("Carregar Dados"):
         try:
             if uploaded_file is not None:
@@ -90,7 +90,7 @@ def main():
                 st.warning("Por favor, envie um arquivo ou insira a URL do CSV.")
                 return
 
-            # Resetar seleções de colunas
+            # Resetar seleções
             st.session_state.col_hist = None
             st.session_state.col_x = None
             st.session_state.col_y = None
@@ -100,144 +100,73 @@ def main():
             st.error(f"Erro ao ler o arquivo: {e}")
             st.session_state.df = None
 
-    # Exibir informações do DataFrame somente se houver dados carregados
+    # -------------------
+    # Se houver DataFrame carregado
+    # -------------------
     if st.session_state.df is not None:
-        st.write("### Visualização dos Dados:")
-        st.dataframe(st.session_state.df)
+        if page == "📝 Análises e Estatísticas":
+            st.write("### Informações sobre os Dados:")
+            st.write("**Tipos de Dados:**")
+            st.write(st.session_state.df.dtypes)
+            
+            st.write("**Valores Nulos por Coluna:**")
+            st.write(st.session_state.df.isnull().sum())
+            
+            st.write("**Número de Registros Duplicados:**")
+            st.write(st.session_state.df.duplicated().sum())
 
-        # -------------------
-        # INFORMAÇÕES SOBRE OS DADOS
-        # -------------------
-        st.write("### Informações sobre os Dados:")
-        st.write("**Tipos de Dados:**")
-        st.write(st.session_state.df.dtypes)
-        
-        st.write("**Valores Nulos por Coluna:**")
-        st.write(st.session_state.df.isnull().sum())
-        
-        st.write("**Número de Registros Duplicados:**")
-        st.write(st.session_state.df.duplicated().sum())
+            st.write("**Número de Valores Únicos por Coluna:**")
+            st.write(st.session_state.df.nunique())
 
-        st.write("**Número de Valores Únicos por Coluna:**")
-        st.write(st.session_state.df.nunique())
+            st.write("**Estatísticas Descritivas:**")
+            st.write(st.session_state.df.describe())
 
-        st.write("**Estatísticas Descritivas:**")
-        st.write(st.session_state.df.describe())
+            st.write("**Distribuição Percentual de Valores Nulos:**")
+            st.write((st.session_state.df.isnull().sum() / len(st.session_state.df)) * 100)
 
-        st.write("**Distribuição Percentual de Valores Nulos:**")
-        st.write((st.session_state.df.isnull().sum() / len(st.session_state.df)) * 100)
+        elif page == "📊 Gráficos":
+            st.write("### Visualização dos Dados:")
+            st.dataframe(st.session_state.df)
 
-        # -------------------
-        # Histograma (numérico)
-        # -------------------
-        st.write("### Histograma")
-        num_cols = st.session_state.df.select_dtypes(include='number').columns
-        if len(num_cols) > 0:
-            # Usar chave única e simplificar a lógica do índice
-            selected_hist = st.selectbox(
-                "Selecione a coluna numérica para histograma",
-                num_cols,
-                index=num_cols.get_loc(st.session_state.col_hist) if st.session_state.col_hist in num_cols else 0,
-                key="hist_select"
-            )
-            # Atualizar o session_state apenas se a seleção mudou
-            if selected_hist != st.session_state.col_hist:
-                st.session_state.col_hist = selected_hist
-            fig_hist = px.histogram(st.session_state.df, x=st.session_state.col_hist, nbins=20, title=f"Distribuição de {st.session_state.col_hist}")
-            st.plotly_chart(fig_hist, use_container_width=True)
-        else:
-            st.info("Não há colunas numéricas para histograma.")
+            num_cols = st.session_state.df.select_dtypes(include='number').columns
+            cat_cols = st.session_state.df.select_dtypes(include='object').columns
 
-        # -------------------
-        # Gráfico de dispersão (numérico)
-        # -------------------
-        st.write("### Gráfico de Dispersão")
-        if len(num_cols) >= 2:
-            # Eixo X
-            selected_x = st.selectbox(
-                "Eixo X",
-                num_cols,
-                index=num_cols.get_loc(st.session_state.col_x) if st.session_state.col_x in num_cols else 0,
-                key="scatter_x_select"
-            )
-            if selected_x != st.session_state.col_x:
-                st.session_state.col_x = selected_x
+            # Histograma
+            if len(num_cols) > 0:
+                selected_hist = st.selectbox("Selecione a coluna numérica para histograma", num_cols, index=0, key="hist_select")
+                fig_hist = px.histogram(st.session_state.df, x=selected_hist, nbins=20, title=f"Distribuição de {selected_hist}")
+                st.plotly_chart(fig_hist, use_container_width=True)
 
-            # Eixo Y
-            selected_y = st.selectbox(
-                "Eixo Y",
-                num_cols,
-                index=num_cols.get_loc(st.session_state.col_y) if st.session_state.col_y in num_cols else 1,
-                key="scatter_y_select"
-            )
-            if selected_y != st.session_state.col_y:
-                st.session_state.col_y = selected_y
+            # Scatter
+            if len(num_cols) >= 2:
+                selected_x = st.selectbox("Eixo X", num_cols, index=0, key="scatter_x")
+                selected_y = st.selectbox("Eixo Y", num_cols, index=1, key="scatter_y")
+                fig_scatter = px.scatter(st.session_state.df, x=selected_x, y=selected_y, title=f"{selected_x} vs {selected_y}")
+                st.plotly_chart(fig_scatter, use_container_width=True)
 
-            fig_scatter = px.scatter(st.session_state.df, x=st.session_state.col_x, y=st.session_state.col_y, title=f"Dispersão: {st.session_state.col_x} vs {st.session_state.col_y}")
-            st.plotly_chart(fig_scatter, use_container_width=True)
-        else:
-            st.info("Não há colunas numéricas suficientes para dispersão.")
+            # Boxplot
+            if len(num_cols) > 0:
+                selected_box = st.selectbox("Coluna para Boxplot", num_cols, index=0, key="boxplot_select")
+                fig_box = px.box(st.session_state.df, y=selected_box, title=f"Boxplot de {selected_box}")
+                st.plotly_chart(fig_box, use_container_width=True)
 
-        # -------------------
-        # Gráfico Boxplot (numérico)
-        # -------------------
-        st.write("### Boxplot")
-        if len(num_cols) > 0:
-            selected_box = st.selectbox(
-                "Selecione a coluna numérica para o Boxplot",
-                num_cols,
-                index=num_cols.get_loc(st.session_state.col_hist) if st.session_state.col_hist in num_cols else 0,
-                key="boxplot_select"
-            )
-            fig_box = px.box(
-                st.session_state.df,
-                y=selected_box,
-                title=f"Boxplot de {selected_box}"
-            )
-            st.plotly_chart(fig_box, use_container_width=True)
-        else:
-            st.info("Não há colunas numéricas para boxplot.")
+            # Heatmap de correlação
+            if len(num_cols) > 1:
+                corr = st.session_state.df[num_cols].corr()
+                fig_heatmap = px.imshow(corr, text_auto=True, color_continuous_scale="RdBu_r", title="Mapa de Calor das Correlações")
+                st.plotly_chart(fig_heatmap, use_container_width=True)
 
-        # -------------------
-        # Heatmap (correlação numérica)
-        # -------------------
-        st.write("### Mapa de Calor (Correlação entre Variáveis Numéricas) 🌡️")
-        if len(num_cols) > 1:
-            corr = st.session_state.df[num_cols].corr()
-            fig_heatmap = px.imshow(
-                corr,
-                text_auto=True,
-                color_continuous_scale="RdBu_r",
-                title="Mapa de Calor das Correlações"
-            )
-            st.plotly_chart(fig_heatmap, use_container_width=True)
-        else:
-            st.info("Não há colunas numéricas suficientes para gerar o mapa de calor.")
-
-
-        # -------------------
-        # Gráfico de barras para dados string
-        # -------------------
-        st.write("### Gráfico de Contagem (colunas categóricas)")
-        cat_cols = st.session_state.df.select_dtypes(include='object').columns
-        if len(cat_cols) > 0:
-            selected_cat = st.selectbox(
-                "Selecione a coluna categórica para contar valores",
-                cat_cols,
-                index=cat_cols.get_loc(st.session_state.col_cat) if st.session_state.col_cat in cat_cols else 0,
-                key="bar_select"
-            )
-            if selected_cat != st.session_state.col_cat:
-                st.session_state.col_cat = selected_cat
-            count_data = st.session_state.df[st.session_state.col_cat].value_counts().reset_index()
-            count_data.columns = [st.session_state.col_cat, 'Quantidade']
-            fig_bar = px.bar(count_data, x=st.session_state.col_cat, y='Quantidade', title=f"Contagem de {st.session_state.col_cat}")
-            st.plotly_chart(fig_bar, use_container_width=True)
-        else:
-            st.info("Não há colunas categóricas (string) para gráfico de contagem.")
+            # Gráfico de barras categórico
+            if len(cat_cols) > 0:
+                selected_cat = st.selectbox("Coluna categórica para contagem", cat_cols, index=0, key="bar_select")
+                count_data = st.session_state.df[selected_cat].value_counts().reset_index()
+                count_data.columns = [selected_cat, 'Quantidade']
+                fig_bar = px.bar(count_data, x=selected_cat, y='Quantidade', title=f"Contagem de {selected_cat}")
+                st.plotly_chart(fig_bar, use_container_width=True)
 
 if __name__ == "__main__":
     main()
+
 
 
 
