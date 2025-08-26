@@ -112,8 +112,10 @@ def main():
             st.write("**Valores Nulos por Coluna:**")
             st.write(st.session_state.df.isnull().sum())
             
-            st.write("**Número de Registros Duplicados:**")
-            st.write(st.session_state.df.duplicated().sum())
+            # st.write("**Número de Registros Duplicados:**")
+            # st.write(st.session_state.df.duplicated().sum())
+            num_duplicados = st.session_state.df.duplicated().sum()
+            st.metric(label="Número de Registros Duplicados", value=num_duplicados)
 
             st.write("**Número de Valores Únicos por Coluna:**")
             st.write(st.session_state.df.nunique())
@@ -166,6 +168,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 
