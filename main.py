@@ -115,10 +115,11 @@ def main():
     if st.session_state.df is not None:
         if page == "📝 Análises e Estatísticas":
             st.write("### Informações sobre os Dados:")
+            st.markdown('<div class="section-title"> 🎲Tipos de Dados</div>', unsafe_allow_html=True)
             st.write("**Tipos de Dados:**")
             st.write(st.session_state.df.dtypes)
             
-            st.write("**Valores Nulos por Coluna:**")
+            st.markdown('<div class="section-title"> 📝Valores Nulos por Coluna</div>', unsafe_allow_html=True)
             st.write(st.session_state.df.isnull().sum())
             
             num_duplicados = st.session_state.df.duplicated().sum()
@@ -190,3 +191,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
