@@ -1,3 +1,5 @@
+quais outros graficos poderia adicionar para analisarmos os dados ?
+
 import streamlit as st
 import pandas as pd
 import base64
@@ -146,6 +148,15 @@ def main():
                 fig_scatter = px.scatter(st.session_state.df, x=selected_x, y=selected_y, title=f"{selected_x} vs {selected_y}")
                 st.plotly_chart(fig_scatter, use_container_width=True)
 
+            # Gráfico de Densidade 2D
+            if len(num_cols) >= 2:
+                selected_density_x = st.selectbox("Eixo X para Densidade", num_cols, index=0, key="density_x")
+                selected_density_y = st.selectbox("Eixo Y para Densidade", num_cols, index=1, key="density_y")
+                
+                fig_density = px.density_heatmap(st.session_state.df, x=selected_density_x, y=selected_density_y,
+                                                title=f"Densidade 2D: {selected_density_x} vs {selected_density_y}")
+                st.plotly_chart(fig_density, use_container_width=True)
+
             # Boxplot
             if len(num_cols) > 0:
                 selected_box = st.selectbox("Coluna para Boxplot", num_cols, index=0, key="boxplot_select")
@@ -168,10 +179,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-
-
-
-
-
