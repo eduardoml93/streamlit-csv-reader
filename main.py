@@ -121,18 +121,19 @@ def main():
             
             st.markdown('<div class="section-title"> 📝Valores Nulos por Coluna</div>', unsafe_allow_html=True)
             st.write(st.session_state.df.isnull().sum())
-            
-            num_duplicados = st.session_state.df.duplicated().sum()
-            st.metric(label="Número de Registros Duplicados", value=num_duplicados)
 
-            st.write("**Número de Valores Únicos por Coluna:**")
+            st.markdown('<div class="section-title"> 📝Número de Registros Duplicados</div>', unsafe_allow_html=True)
+            st.write(st.session_state.df.duplicated().sum())
+
+            st.markdown('<div class="section-title"> 📝Número de Valores Únicos por Coluna</div>', unsafe_allow_html=True)
             st.write(st.session_state.df.nunique())
 
-            st.write("**Estatísticas Descritivas:**")
+            st.markdown('<div class="section-title"> 📝Estatísticas Descritivas</div>', unsafe_allow_html=True)
             st.write(st.session_state.df.describe())
 
-            st.write("**Distribuição Percentual de Valores Nulos:**")
-            st.write((st.session_state.df.isnull().sum() / len(st.session_state.df)) * 100)
+            st.markdown('<div class="section-title">📝 Distribuição Percentual de Valores Nulos</div>', unsafe_allow_html=True)
+            null_percentage = (st.session_state.df.isnull().sum() / len(st.session_state.df)) * 100
+            st.write(null_percentage.round(2).astype(str) + "%")
 
         elif page == "📊 Gráficos":
             st.write("### Visualização dos Dados:")
@@ -191,4 +192,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
