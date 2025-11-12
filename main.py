@@ -1,4 +1,3 @@
-quais outros graficos poderia adicionar para analisarmos os dados ?
 
 import streamlit as st
 import pandas as pd
@@ -179,3 +178,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
